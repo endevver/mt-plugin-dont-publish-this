@@ -1,0 +1,179 @@
+<mt:SetVarBlock name="page_title">Publish Exclusion Filters</mt:SetVarBlock>
+<mt:SetVarBlock name="screen_group">settings</mt:SetVarBlock>
+
+<mt:Var name="position_actions_bottom" value="1">
+<mt:SetVarTemplate name="action_buttons">
+        <button
+            type="submit"
+            accesskey="s"
+            class="primary-button primary action button"
+            title="<__trans phrase="Save (s)">">
+            <__trans phrase="Save Filters">
+        </button>
+</mt:SetVarTemplate>
+
+<mt:SetVarBlock name="system_msg">
+    <div id="msg-block">
+        <mt:if name="saved">
+            <mtapp:statusmsg
+                class="success">
+                Publishing exclusion filters have been successfully saved.
+            </mtapp:statusmsg>
+        </mt:if>
+    </div>
+</mt:SetVarBlock>
+
+<mt:SetVarBlock name="html_head">
+<style type="text/css">
+.filter {
+    margin-bottom: 20px;
+}
+
+.delete {
+    display: inline-block;
+    vertical-align: text-top;
+    width: 17px;
+    height: 17px;
+    background: url(<mt:StaticWebPath>images/delete.gif) 0 20px;
+    cursor: pointer;
+}
+.delete:hover {
+    background-position: 0 0;
+}
+
+.add {
+    margin-top: 20px;
+    cursor: pointer;
+    color: #507ea4;
+}
+.add:hover {
+    color: #2b2b2b;
+}
+
+.system-filter { margin-bottom: 10px; }
+.system-filter .filter-object,
+.system-filter .filter-text { font-family: monospace; }
+</style>
+<script type="text/javascript">
+jQuery(document).ready(function($) {
+    // Add a blank filter to get started.
+    addBlankFilter();
+    
+    // Click the delete button to remove a filter.
+    $('.delete').on('click', function() {
+        $(this).parent().remove();
+    });
+
+    // Add another filter
+    $('.add').click(function() {
+        addBlankFilter();
+    });
+});
+
+function addBlankFilter() {
+    jQuery('#blank-filter')
+        .clone()
+        .removeClass('hidden')
+        .removeAttr('id')
+        .appendTo( jQuery('.filters') );
+}
+
+</script>
+</mt:SetVarBlock>
+
+<mt:SetVarBlock name="form_header">
+    <form method="post" action="<mt:Var name="script_url">" target="_top">
+        <input type="hidden" name="__mode"  value="publish_exclusion_filters.save" />
+        <input type="hidden" name="blog_id" value="<mt:Var name="blog_id">" />
+</mt:SetVarBlock>
+
+<mt:Include name="include/header.tmpl">
+
+<p>
+    Filter content to <em>not</em> be published by selecting an object to
+    compare and specifying text within that object to match.
+</p>
+
+<mt:SetVarTemplate name="filter_html">
+    Do not publish
+    <select name="filter_object">
+    <mt:Loop name="filter_objects">
+        <option value="<mt:Var name="__key__">"
+            <mt:If name="__key__" eq="$filter_object">selected</mt:If>>
+            <mt:Var name="__value__">
+        </option>
+    </mt:Loop>
+    </select>
+
+    with text matching
+    <input type="text"
+        name="filter_text"
+        class="text short"
+        value="<mt:Var name="filter_text" escape="html">" />
+
+    and
+    <select name="filter_status">
+        <option value="unchanged"
+            <mt:If name="filter_status" eq="unchanged">selected</mt:If>>
+            do not change their publish status
+        </option>
+        <option value="unpublished"
+            <mt:If name="filter_status" eq="unpublished">selected</mt:If>>
+            set their status to &ldquo;unpublished&rdquo;
+        </option>
+    </select>.
+
+    <span class="delete"></span>
+</mt:SetVarTemplate>
+
+<mt:If name="system_saved_filters">
+    <mtapp:Setting
+        label="System-level Filters"
+        id="system-filters"
+        hint="Publish exclusion filters have been defined at the system level, too. <a href="?__mode=publish_exclusion_filters.edit&amp;blog_id=0">Edit system-level filters</a>"
+        show_hint="1">
+        <mt:Loop name="system_saved_filters">
+            <div class="system-filter">
+                <p>
+                    Do not publish
+                    <span class="filter-object"><mt:Var name="filter_object"></span>
+                    with text matching
+                    <span class="filter-text"><mt:Var name="filter_text"></span>
+                    and the status should be <mt:Var name="filter_status">.
+                </p>
+            </div>
+        </mt:Loop>
+    </mtapp:Setting>
+</mt:If>
+
+<mtapp:Setting
+    label="Filters"
+    id="filters">
+
+    <div class="filters">
+    <mt:Loop name="saved_filters">
+        <div class="filter">
+            <mt:Var name="filter_html">
+        </div>
+    </mt:Loop>
+    </div>
+    
+    <div class="add">
+        Add another publish exclusion filter
+    </div>
+
+</mtapp:Setting>
+
+<div id="blank-filter" class="filter hidden">
+    <mt:Var name="filter_html">
+</div>
+
+
+
+<mt:Include name="include/actions_bar.tmpl" bar_position="bottom" hide_pager="1">
+
+<mt:SetVarBlock name="form_footer">
+    </form>
+</mt:SetVarBlock>
+
+<mt:Include name="include/footer.tmpl">

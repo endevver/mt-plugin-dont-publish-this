@@ -1,0 +1,33 @@
+key:         dontpublishthis
+id:          dontpublishthis
+name:        "Don't Publish This"
+description: "Streamline publishing by identifying conditions where templates do not need to be republished."
+author_name: 'Dan Wolfgang, Endevver'
+author_link: http://endevver.com
+plugin_link: https://github.com/endevver/mt-plugin-dont-publish-this
+version:     1.0.0
+
+applications:
+    cms:
+        menus:
+            settings:dontpublishthis:
+                label: 'Publishing Exclusion Filters'
+                mode:  publish_exclusion_filters.edit
+                order: 505
+                view:
+                    - system
+                    - website
+                    - blog
+                permission: administer
+        methods:
+            publish_exclusion_filters.edit: $DontPublishThis::DontPublishThis::MT::CMS::edit
+            publish_exclusion_filters.save: $DontPublishThis::DontPublishThis::MT::CMS::save
+
+callbacks:
+    'MT::Comment::post_insert': DontPublishThis::MT::Callbacks::callback_comment_post_insert
+    'MT::Entry::post_insert': DontPublishThis::MT::Callbacks::callback_entry_post_insert
+    # The build_file_filter callback should run first so that we can avoid ever
+    # even sending a job to the Publish Queue
+    build_file_filter:
+        priority: 1
+        handler: DontPublishThis::MT::Callbacks::callback_build_file_filter
