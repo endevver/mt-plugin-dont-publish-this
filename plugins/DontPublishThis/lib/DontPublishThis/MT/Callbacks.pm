@@ -106,6 +106,9 @@ sub callback_build_file_filter {
         MT->log("At the build_file_filter callback -- don't publish items with this request for URL ". $args{file_info}->url);
         return 0;
     }
+    
+    # Must return true for publishing to continue.
+    return 1;
 }
 
 1;

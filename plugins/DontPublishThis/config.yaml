@@ -5,7 +5,7 @@ description: "Streamline publishing by identifying conditions where templates do
 author_name: 'Dan Wolfgang, Endevver'
 author_link: http://endevver.com
 plugin_link: https://github.com/endevver/mt-plugin-dont-publish-this
-version:     1.0.0
+version:     1.0.1
 
 applications:
     cms:
