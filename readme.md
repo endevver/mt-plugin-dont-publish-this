@@ -7,6 +7,13 @@ republishing files can be detrimental to performance. Said differently, there
 are times Movable Type will republish files unnecessarily, and this plugin will
 help administrators to work around that problem.
 
+A useful example: comment quality can be judged by comment length. Low quality
+comments such as "+1!" and "Awesome!" are not high-priority in a busy
+publishing environment. A simple regular expression can be used to target these
+comments for delayed publishing: `.{10,}`. These comments will be published
+when the Entry/Page in context is republished from edits or more substantial
+comments.
+
 A very specific example from a client's install: a simple location check-in
 system allows users to easily submit a "I checked in here" comment. Those
 "comments" are never published through the templates, but Movable Type still
